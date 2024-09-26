@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: business-white-paper
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: business-white-paper
+  template:
+    metadata:
+      labels:
+        app: business-white-paper
+    spec:
+      containers:
+      - name: business-white-paper-container
+        image: localhost:32000/business-white-paper:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080

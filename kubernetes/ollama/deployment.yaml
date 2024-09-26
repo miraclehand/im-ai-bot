@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ollama-tinyllama
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ollama-tinyllama
+  template:
+    metadata:
+      labels:
+        app: ollama-tinyllama
+    spec:
+      containers:
+      - name: ollama
+        image: localhost:32000/ollama-tinyllama:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 11434
+        #resources: # 아래 부분을 설정함으로써 파드 실행에 필요한 노드의 자원을 정할 수 있다.
+        #  requests:
+        #    memory: "16Gi"
+        #  limits: # default 제한 값이 싫은 경우, 아래에 설정할 수 있다.
+        #    memory: "20Gi" # default는 512Mi이다.

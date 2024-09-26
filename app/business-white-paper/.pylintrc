@@ -1,0 +1,4 @@
+[MESSAGES CONTROL]
+disable=C0114, C0116, W0613, W0105
+
+max-line-length=120
