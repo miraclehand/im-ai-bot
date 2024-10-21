@@ -1,6 +1,5 @@
 import threading
 import atexit
-from pathlib import Path
 from flask import Flask
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -11,8 +10,7 @@ logger = setup_logging()
 
 def create_app():
     # Load environment variables
-    env_path = Path('..') / '.env'
-    load_dotenv(dotenv_path=env_path)
+    load_dotenv(verbose=True)
 
     app = Flask(__name__)
     CORS(app)

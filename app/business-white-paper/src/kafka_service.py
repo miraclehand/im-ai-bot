@@ -2,17 +2,18 @@ import json
 from confluent_kafka import Consumer, Producer, KafkaException, KafkaError
 from llm_service import generate_answer
 from logger import setup_logging
+from redis_service import connect_to_redis_server
 
 logger = setup_logging()
 
 consumer_config = {
-    'bootstrap.servers': 'kafka-service:9092',
+    'bootstrap.servers': 'kafka.default.svc.cluster.local:9092',
     'group.id': 'ollama-service-group',
     'auto.offset.reset': 'earliest'
 }
 
 producer_config = {
-    'bootstrap.servers': 'kafka-service:9092'
+    'bootstrap.servers': 'kafka.default.svc.cluster.local:9092'
 }
 
 consumer = Consumer(consumer_config)
@@ -22,6 +23,7 @@ consumer.subscribe(['query-business'])
 
 def consume_and_answer():
     logger.info('Starting consume_and_answer thread...')
+    redis = connect_to_redis_server()
     try:
         while True:
             msg = consumer.poll(timeout=1.0)
@@ -35,8 +37,30 @@ def consume_and_answer():
                 raise KafkaException(msg.error())
 
             key = msg.key().decode('utf-8')
-            question = msg.value().decode('utf-8')
 
+            json_string = msg.value().decode('utf-8')
+            logger.info("json_string:%s", json_string)
+            json_acceptable_string = json_string.replace("'", "\"")
+            d = json.loads(json_acceptable_string)
+            question = d.get('message')
+            logger.info("question:%s", question)
+
+            value = redis.get(question)
+            if value:
+                logger.info("redis question:%s, value:%s", question, value)
+                response = {
+                    'chunk': value,
+                    'chunk_id': 1,
+                    'is_final': True
+                }
+                producer.produce(
+                    'query-business-response',
+                    key=key,
+                    value=json.dumps(response).encode('utf-8')
+                )
+                producer.flush()
+                return
+            response_value = ""
             chunk_count = 0
             for chunk in generate_answer(question):
                 chunk_count += 1
@@ -51,7 +75,8 @@ def consume_and_answer():
                     value=json.dumps(response).encode('utf-8')
                 )
                 producer.flush()
-                logger.info("Sent chunk %d for key=%s: %s", chunk_count, key, chunk)
+                response_value += chunk
+                #logger.info("Sent chunk %d for key=%s: %s", chunk_count, key, chunk)
             final_response = {
                 'chunk': '',
                 'chunk_id': chunk_count + 1,
@@ -63,7 +88,8 @@ def consume_and_answer():
                 value=json.dumps(final_response).encode('utf-8')
             )
             producer.flush()
-            logger.info("Completed answer generation for key=%s with %d chunks", key, chunk_count)
+            logger.info("Completed generation for key=%s response_value:%s", key, response_value)
+            redis.set(question, response_value)
 
             """
             answer = "".join(generate_answer(question))

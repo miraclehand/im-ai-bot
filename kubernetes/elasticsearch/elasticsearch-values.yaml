@@ -1,0 +1,43 @@
+master:
+  replicaCount: 1
+  masterOnly: false
+  persistence:
+    enabled: true
+    size: 4Gi
+  heapSize: 512m
+  resources:
+    limits:
+      cpu: 1
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+
+data:
+  replicaCount: 0
+
+coordinating:
+  replicaCount: 0
+
+ingest:
+  replicaCount: 0
+
+# 보안 설정
+security:
+  enabled: false
+
+# HTTP 설정
+http:
+  enabled: true
+
+# 네트워크 설정
+service:
+  type: NodePort
+  ports:
+    restAPI: 9200
+  name: elasticsearch-service
+
+# 추가 설정
+clusterName: "elasticsearch-cluster"
+sysctlInitContainer:
+  enabled: false

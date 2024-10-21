@@ -41,9 +41,6 @@ def generate_answer(question):
         | StrOutputParser()
     )
 
-    for chunk in rag_chain.invoke(input_data):
-        logger.info(chunk)
-        yield chunk
-        #await asyncio.sleep(0.5)
+    yield from rag_chain.invoke(input_data)
 
     #return rag_chain.invoke(input_data)

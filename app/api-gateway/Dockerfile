@@ -5,9 +5,10 @@ LABEL maintainer="miraclehand@naver.com"
 WORKDIR /app
 
 COPY requirements.txt ./
-COPY packages /app/packages
+#COPY packages /app/packages
 
-RUN pip install --no-index --find-links=/app/packages -r requirements.txt
+RUN pip install -r requirements.txt
+#RUN pip install --no-index --find-links=/app/packages -r requirements.txt
 
 COPY ./src /app/src
 COPY .pylintrc ./

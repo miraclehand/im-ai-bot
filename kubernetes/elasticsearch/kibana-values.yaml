@@ -1,0 +1,31 @@
+elasticsearchHosts: "elasticsearch"
+
+resources:
+  requests:
+    cpu: "200m"
+    memory: "1Gi"
+  limits:
+    cpu: "1"
+    memory: "2Gi"
+
+readinessProbe:
+  timeoutSeconds: 500
+  initialDelaySeconds: 60
+  periodSeconds: 10
+  failureThreshold: 3
+
+elasticsearch:
+  hosts:
+    - "elasticsearch"
+  port: 9200
+
+xpack.elasticAssistant.enabled: false
+xpack.observabilityAIAssistant.enabled: false
+xpack.ml.enabled: false
+xpack.inference.enabled: false
+xpack.security.enabled: false
+xpack.monitoring.enabled: false
+xpack.reporting.enabled: false
+xpack.graph.enabled: false
+xpack.observabilityAIAssistant.enabled: false
+

@@ -1,10 +1,3 @@
-docker pull bitnami/zookeeper:latest
-docker image tag bitnami/zookeeper:latest localhost:32000/bitnami/zookeeper:latest
-docker push localhost:32000/bitnami/zookeeper:latest
-microk8s kubectl rollout restart deployment zookeeper
+docker build -t localhost:32000/kafka-connect-elasticsearch:latest .
+docker push localhost:32000/kafka-connect-elasticsearch:latest
 
-
-docker pull bitnami/kafka:latest
-docker image tag bitnami/kafka:latest localhost:32000/bitnami/kafka:latest
-docker push localhost:32000/bitnami/kafka:latest
-microk8s kubectl rollout restart deployment kafka
