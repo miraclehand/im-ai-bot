@@ -19,6 +19,13 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
+        volumeMounts:
+          - mountPath: /app/models/bge-m3  # 컨테이너 내 경로
+            name: model-volume
+      volumes:
+        - name: model-volume
+          hostPath:
+            path: /home/ypark/Dev/im-ai-bot/app/business-white-paper/models/bge-m3  # 로컬 파일 경로
       dnsPolicy: None  # 기본 DNS 정책을 None으로 설정
       dnsConfig:
         options:
