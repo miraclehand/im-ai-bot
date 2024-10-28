@@ -19,3 +19,15 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
+      dnsPolicy: None  # 기본 DNS 정책을 None으로 설정
+      dnsConfig:
+        options:
+        - name: "ndots"
+          value: "5"
+        nameservers:
+          - 10.152.183.10
+        searches:
+          - default.svc.cluster.local
+          - svc.cluster.local
+          - cluster.local
+          - davolink
