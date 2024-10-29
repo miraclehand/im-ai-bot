@@ -20,9 +20,9 @@ COPY packages /app/packages
 
 RUN pip install --no-index --find-links=/app/packages -r requirements.txt
 
-COPY ./src /app/src
 COPY .env ./
 COPY .pylintrc ./
+COPY ./src /app/src
 
 ENV PYTHONPATH=/app/src
 

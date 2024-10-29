@@ -16,8 +16,8 @@ COPY packages /app/packages
 
 RUN pip install --no-index --find-links=/app/packages -r requirements.txt
 
-COPY ./src /app/src
 COPY .pylintrc ./
 COPY .env ./
+COPY ./src /app/src
 
 CMD ["sh", "-c", "pylint src/*.py && python src/app.py"]
