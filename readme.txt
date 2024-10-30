@@ -58,7 +58,7 @@ It has been built for Ubuntu on a Raspberry Pi5.
               "config": {
                 "connector.class": "io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
                 "tasks.max": "1",
-                "topics": "query-business-qa"
+                "topics": "query-business-qa",
                 "connection.url": "http://elasticsearch:9200",
                 "type.name": "_doc",
                 "key.ignore": "true",
