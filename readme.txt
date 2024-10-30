@@ -39,7 +39,9 @@ It has been built for Ubuntu on a Raspberry Pi5.
 
 
 * install kafka
-    1. $ helm install kafka --set volumePermissions.enabled=true,replicaCount=1,listeners.client.protocol=PLAINTEXT,kafkaConnect.enabled=true oci://registry-1.docker.io/bitnamicharts/kafka -f kafka-values.yaml
+    1. $ helm install kafka oci://registry-1.docker.io/bitnamicharts/kafka -f kafka-values.yaml
+    2. $ kubectl delete pods,svc,configmap,pvc -l app.kubernetes.io/instance=kafka
+
 
 
 * install kafka-connect

@@ -1,3 +1,15 @@
+replicaCount: 1     # 브로커를 1개로 설정
+
+listeners:
+  client:
+    protocol: PLAINTEXT
+
+volumePermissions:
+  enabled: true
+
+kafkaConnect:
+  enabled: true      # Kafka Connect 활성화
+
 topics:
   - name: query-business
     partitions: 3
