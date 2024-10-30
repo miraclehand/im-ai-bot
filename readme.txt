@@ -43,7 +43,6 @@ It has been built for Ubuntu on a Raspberry Pi5.
     2. $ kubectl delete pods,svc,configmap,pvc -l app.kubernetes.io/instance=kafka
 
 
-
 * install kafka-connect
     1. $ kubectl apply -f kafka-connect-deployment.yaml
     2. $ kubectl apply -f kafka-connect-service.yaml
@@ -59,7 +58,7 @@ It has been built for Ubuntu on a Raspberry Pi5.
               "config": {
                 "connector.class": "io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
                 "tasks.max": "1",
-                "topics": "query-business,query-business-response",
+                "topics": "query-business-qa"
                 "connection.url": "http://elasticsearch:9200",
                 "type.name": "_doc",
                 "key.ignore": "true",

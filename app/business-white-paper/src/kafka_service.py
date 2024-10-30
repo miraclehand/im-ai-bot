@@ -24,6 +24,7 @@ consumer.subscribe(['query-business'])
 def consume_and_answer():
     logger.info('Starting consume_and_answer thread...')
     redis = connect_to_redis_server()
+
     try:
         while True:
             msg = consumer.poll(timeout=1.0)
@@ -37,71 +38,66 @@ def consume_and_answer():
                 raise KafkaException(msg.error())
 
             key = msg.key().decode('utf-8')
-
             json_string = msg.value().decode('utf-8')
             logger.info("json_string:%s", json_string)
+
             json_acceptable_string = json_string.replace("'", "\"")
             d = json.loads(json_acceptable_string)
             question = d.get('message')
             logger.info("question:%s", question)
 
-            value = redis.get(question)
-            if value:
-                logger.info("redis question:%s, value:%s", question, value)
-                response = {
-                    'chunk': value,
-                    'chunk_id': 1,
-                    'is_final': True
-                }
-                producer.produce(
-                    'query-business-response',
-                    key=key,
-                    value=json.dumps(response).encode('utf-8')
-                )
-                producer.flush()
+            response_value = redis.get(question)
+            if response_value:
+                logger.info("redis question:%s, response_value:%s", question, response_value)
+                response = create_response(response_value, 1, True)
+                send_response(key, response)
+
+                send_final_response(key, question, response_value)
                 continue
+
             response_value = ""
             chunk_count = 0
             for chunk in generate_answer(question):
                 chunk_count += 1
-                response = {
-                    'chunk': chunk,
-                    'chunk_id': chunk_count,
-                    'is_final': False
-                }
-                producer.produce(
-                    'query-business-response',
-                    key=key,
-                    value=json.dumps(response).encode('utf-8')
-                )
-                producer.flush()
+                response = create_response(chunk, chunk_count, False)
+                send_response(key, response)
                 response_value += chunk
-                #logger.info("Sent chunk %d for key=%s: %s", chunk_count, key, chunk)
-            final_response = {
-                'chunk': '',
-                'chunk_id': chunk_count + 1,
-                'is_final': True
-            }
-            producer.produce(
-                'query-business-response',
-                key=key,
-                value=json.dumps(final_response).encode('utf-8')
-            )
-            producer.flush()
+
+            final_response = create_response('', chunk_count + 1, True)
+            send_response(key, final_response)
             logger.info("Completed generation for key=%s response_value:%s", key, response_value)
+            send_final_response(key, question, response_value)
+
             redis.set(question, response_value)
-
-            """
-            answer = "".join(generate_answer(question))
-
-            logger.info("Generated answer for key=%s: %s (Question: %s)", key, answer, question)
-
-            producer.produce('query-business-response', key=key, value=answer.encode('utf-8'))
-            producer.flush()
-            """
 
     except KafkaException as e:
         logger.error("KafkaException in Kafka consumer: %s", e)
+
+def create_response(chunk, chunk_id, is_final):
+    return {
+        'chunk': chunk,
+        'chunk_id': chunk_id,
+        'is_final': is_final
+    }
+
+def send_response(key, response):
+    producer.produce(
+        'query-business-response',
+        key=key,
+        value=json.dumps(response).encode('utf-8')
+    )
+    producer.flush()
+
+def send_final_response(key, question, response_value):
+    response = {
+        "qa": {
+            'question': question,
+            'answer': response_value,
+        }
+    }
+    logger.info("send_final_response. query-business-qa key:%s, %s", key, response)
+    producer.produce('query-business-qa', key=key, value=json.dumps(response).encode('utf-8'))
+    producer.flush()
 
 def shutdown_consumer():
     if consumer:

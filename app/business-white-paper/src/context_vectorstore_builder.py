@@ -27,7 +27,6 @@ def load_and_persist_documents(directory_path=DIRECTORY_PATH, vectorstore_path=V
         chunk_overlap=50,
     )
     chunked_docs = text_splitter.split_documents(documents)
-    print(documents)
 
     os.makedirs(vectorstore_path, exist_ok=True)
 
