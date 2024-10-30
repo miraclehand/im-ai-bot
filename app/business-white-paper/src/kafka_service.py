@@ -59,7 +59,7 @@ def consume_and_answer():
                     value=json.dumps(response).encode('utf-8')
                 )
                 producer.flush()
-                return
+                continue
             response_value = ""
             chunk_count = 0
             for chunk in generate_answer(question):
