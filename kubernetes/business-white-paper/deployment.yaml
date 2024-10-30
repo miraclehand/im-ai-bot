@@ -22,10 +22,15 @@ spec:
         volumeMounts:
           - mountPath: /app/models/bge-m3  # 컨테이너 내 경로
             name: model-volume
+          - mountPath: /app/business-data-library/vectorstore  # 컨테이너 내 경로
+            name: vectorstore-volume
       volumes:
         - name: model-volume
           hostPath:
             path: /home/ypark/Dev/im-ai-bot/app/business-white-paper/models/bge-m3  # 로컬 파일 경로
+        - name: vectorstore-volume
+          hostPath:
+            path: /home/ypark/Dev/im-ai-bot/app/business-white-paper/data-library/vectorstore
       dnsPolicy: None  # 기본 DNS 정책을 None으로 설정
       dnsConfig:
         options:

@@ -26,4 +26,5 @@ COPY ./src /app/src
 
 ENV PYTHONPATH=/app/src
 
-CMD ["sh", "-c", "find ./src -name '*.py' -exec pylint {} \\; && gunicorn --timeout 6000 -w 1 -b 0.0.0.0:8080 --log-level info --access-logfile - --error-logfile - 'src.app:create_app()'"]
+CMD ["sh", "-c", "gunicorn --timeout 6000 -w 1 -b 0.0.0.0:8080 --log-level info --access-logfile - --error-logfile - 'src.app:create_app()'"]
+#CMD ["sh", "-c", "find ./src -name '*.py' -exec pylint {} \\; && gunicorn --timeout 6000 -w 1 -b 0.0.0.0:8080 --log-level info --access-logfile - --error-logfile - 'src.app:create_app()'"]

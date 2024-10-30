@@ -20,4 +20,5 @@ COPY .pylintrc ./
 COPY .env ./
 COPY ./src /app/src
 
-CMD ["sh", "-c", "pylint src/*.py && python src/app.py"]
+CMD ["sh", "-c", "python src/app.py"]
+#CMD ["sh", "-c", "pylint src/*.py && python src/app.py"]

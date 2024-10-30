@@ -6,7 +6,7 @@ from logger import setup_logging
 
 logger = setup_logging()
 
-MODEL_PATH = "/app/models/bge-m3"
+MODEL_PATH = os.getenv("MODEL_PATH", "/app/models/bge-m3")
 
 if not os.path.exists(MODEL_PATH):
     logger.info('path not exists')
