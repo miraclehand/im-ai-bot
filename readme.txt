@@ -8,7 +8,7 @@ It has been built for Ubuntu on a Raspberry Pi5.
             cgroup_enable=memory cgroup_memory=1
     2. $ sudo reboot
     3. $ sudo snap install microk8s --classic
-    4. $ microk8s.start
+    4. $ sudo microk8s.start
     5. $ sudo reboot
     6. $ sudo usermod -a -G microk8s $USER
     7. $ sudo chown -f -R $USER ~/.kube
@@ -20,14 +20,26 @@ It has been built for Ubuntu on a Raspberry Pi5.
 
 
 * install docker
-    1. ref. https://docs.docker.com/engine/install/ubuntu/
-    2. $ sudo groupadd docker
-    3. $ sudo usermod -aG docker $USER
-    4. $ sudo vi /etc/docker/daemon.json
+    - ref. https://docs.docker.com/engine/install/ubuntu/
+    1. $ for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
+    2. $ sudo apt-get update
+    3. $ sudo apt-get install ca-certificates curl
+    4. $ sudo install -m 0755 -d /etc/apt/keyrings
+    5. $ sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    6. $ sudo chmod a+r /etc/apt/keyrings/docker.asc
+    7. $ echo \
+          "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+          $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+          sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    8. $ sudo apt-get update
+    9. $ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+   10. $ sudo groupadd docker
+   11. $ sudo usermod -aG docker $USER
+   12. $ sudo vi /etc/docker/daemon.json
         {
           "insecure-registries" : ["localhost:32000"]
         }
-    5. $ sudo systemctl restart docker
+   13. $ sudo systemctl restart docker
 
 
 * install helm
@@ -101,16 +113,16 @@ It has been built for Ubuntu on a Raspberry Pi5.
        $ kubectl delete secret kibana-kibana-es-token
 
 
+* install redis
+    1. $ helm install redis-server oci://registry-1.docker.io/bitnamicharts/redis
+    2. $ export REDIS_PASSWORD=$(kubectl get secret --namespace default redis-server  -o jsonpath="{.data.redis-password}" | base64 -d)
+
+
 * install mongodb
     0. ref. https://artifacthub.io/packages/helm/groundhog2k/mongodb/0.1.0
     1. $ helm repo add groundhog2k https://groundhog2k.github.io/helm-charts/
     2. $ helm install mongodb groundhog2k/mongodb
     3. connect uri=mongodb.default.svc.cluster.local
-
-* install redis
-    1. $ helm install redis-server oci://registry-1.docker.io/bitnamicharts/redis
-    2. $ export REDIS_PASSWORD=$(kubectl get secret --namespace default redis-server  -o jsonpath="{.data.redis-password}" | base64 -d)
-
 
 
 * Unorganized command

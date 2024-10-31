@@ -4,7 +4,7 @@ def connect_to_redis_server():
     # Redis 연결 정보
     redis_host = "redis-server-master.default.svc.cluster.local"  # Redis 서비스 이>름
     redis_port = 6379  # 기본 포트
-    redis_password = 'jkatRsQJ3c'
+    redis_password = 'm1UbiXI3R5'
 
     return (
         redis.Redis(
