@@ -10,6 +10,9 @@ volumePermissions:
 kafkaConnect:
   enabled: true      # Kafka Connect 활성화
 
+configurationOverrides:
+  "auto.create.topics.enable": "true"  # 토픽 자동 생성 활성화
+
 topics:
   - name: query-business
     partitions: 3

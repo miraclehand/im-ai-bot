@@ -1,6 +1,12 @@
 This is an AI bot service.
 It has been built for Ubuntu on a Raspberry Pi5.
 
+* install packages for builder
+    1. $ sudo apt install -y build-essential
+    2. $ sudo apt install -y python3-dev
+    3. $ sudo apt install -y g++
+
+
 * install microk8s
     1. add options
         $ sudo vi /boot/firmware/cmdline.txt
@@ -114,7 +120,7 @@ It has been built for Ubuntu on a Raspberry Pi5.
 
 
 * install redis
-    1. $ helm install redis-server oci://registry-1.docker.io/bitnamicharts/redis
+    1. $ helm install redis-server oci://registry-1.docker.io/bitnamicharts/redis -f redis-values.yaml
     2. $ export REDIS_PASSWORD=$(kubectl get secret --namespace default redis-server  -o jsonpath="{.data.redis-password}" | base64 -d)
 
 

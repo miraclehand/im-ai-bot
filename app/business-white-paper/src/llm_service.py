@@ -18,8 +18,7 @@ def generate_answer(question):
     search_results = retriever.invoke(question)
 
     if not search_results:
-        yield "죄송합니다. 해당 질문에 대한 답변을 찾을 수 없습니다."
-        return
+        return "죄송합니다. 해당 질문에 대한 답변을 찾을 수 없습니다."
 
     logger.info("Search results: %s", search_results)
 
@@ -46,6 +45,5 @@ def generate_answer(question):
         | StrOutputParser()
     )
 
-    yield from rag_chain.invoke(input_data)
-
-    #return rag_chain.invoke(input_data)
+    #yield from rag_chain.invoke(input_data)
+    return rag_chain.invoke(input_data)
