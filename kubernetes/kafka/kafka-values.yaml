@@ -11,7 +11,9 @@ kafkaConnect:
   enabled: true      # Kafka Connect 활성화
 
 configurationOverrides:
-  "auto.create.topics.enable": "true"  # 토픽 자동 생성 활성화
+  "auto.create.topics.enable": "true"  # Kafka에서 토픽 자동 생성 활성화
+  "offset.storage.topic": "connect-offsets"  # Kafka Connect가 사용할 오프셋 저장 토픽
+  "offset.storage.replication.factor": "1"  # 오프셋 토픽의 복제 수 설정
 
 topics:
   - name: query-business

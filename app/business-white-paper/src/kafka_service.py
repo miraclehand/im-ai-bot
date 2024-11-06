@@ -55,6 +55,7 @@ def consume_and_answer():
                 send_final_response(key, question, response_value)
                 continue
 
+            """
             response_value = ""
             chunk_count = 0
             for chunk in generate_answer(question):
@@ -62,6 +63,12 @@ def consume_and_answer():
                 response = create_response(chunk, chunk_count, False)
                 send_response(key, response)
                 response_value += chunk
+            """
+
+            chunk_count = 1
+            response_value = generate_answer(question)
+            response = create_response(response_value, chunk_count, False)
+            send_response(key, response)
 
             final_response = create_response('', chunk_count + 1, True)
             send_response(key, final_response)
