@@ -38,4 +38,3 @@ if __name__ == '__main__':
 
     # Telegram 봇을 메인 스레드에서 실행
     run_telegram_bot()
-
